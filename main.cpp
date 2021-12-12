@@ -9,6 +9,15 @@
 #include <windows.h>
 #include <conio.h>
 #include <fstream>
+#include <dos.h>
+#include <time.h>
+
+#define SCREEN_WIDTH 90
+#define SCREEN_HEIGHT 26
+#define WIN_WIDTH 70
+
+HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
+COORD CursorPosition;
 
 using std::cout;
 using std::cin;
@@ -180,6 +189,13 @@ void formula::H_Range(double iHeight, double velocity)
     Range = velocity * time;
 }
 
+// menu displayer
+void gotoxy(int x, int y){
+    CursorPosition.X = x;
+    CursorPosition.Y = y;
+    SetConsoleCursorPosition(console, CursorPosition);
+}
+
 // main menu
 void projectileMotion();
 void freeFall();
@@ -214,13 +230,13 @@ int main()
     do{
 
         system("cls");
-        cout << "Mechanics (Dynamic)" << endl;
-        cout << "1 - Projectile Motion" << endl;
-        cout << "2 - Free Fall" << endl;
-        cout << "3 - Horizontal Projectile Motion" << endl;
-        cout << "4 - Info" << endl;
-        cout << "5 - Exit" << endl;
-        cout << "Menu: ";
+        gotoxy(5,3); cout << "Mechanics (Dynamic)" << endl;
+        gotoxy(5,4); cout << "1 - Projectile Motion" << endl;
+        gotoxy(5,5); cout << "2 - Free Fall" << endl;
+        gotoxy(5,6); cout << "3 - Horizontal Projectile Motion" << endl;
+        gotoxy(5,7); cout << "4 - Info" << endl;
+        gotoxy(5,8); cout << "5 - Exit" << endl;
+        gotoxy(5,10); cout << "Select option: ";
         char op = getch();
 
         switch(op){
@@ -334,21 +350,29 @@ void HorizontalPMotion()
 void Info()
 {
     system("cls");
-    cout << "# Started since 10 Dec 2021 12.00am" << endl;
-    cout << "# Authored by Fikri Hisham-muddin 2112011" << endl;
-    cout << "# fikrichuck@gmail.com" << endl;
-    cout << "# github.com/Astranot" << endl;
-    cout << "# github.com/Fiekzz" << endl;
-    cout << "Press any key continue" << endl;
-    getch();
+    gotoxy(5,3); cout << "# Started since 10 Dec 2021 12.00am" << endl;
+    gotoxy(5,4); cout << "# Authored by Fikri Hisham-muddin 2112011" << endl;
+    gotoxy(5,5); cout << "# fikrichuck@gmail.com" << endl;
+    gotoxy(5,6); cout << "# github.com/Astranot" << endl;
+    gotoxy(5,7); cout << "# github.com/Fiekzz" << endl;
+    gotoxy(5,8); cout << "Press any key continue" << endl;
+    gotoxy(5,9); getch();
 }
 
 // exit
 void Exit()
 {
+    char op;
     system("cls");
-    cout << "Thank you!" << endl;
-    exit(0);
+    gotoxy(5,3); cout << "Exit the program? (Y/N)" << endl;
+    gotoxy(5,4); op = getch();
+    if(op == 'Y' || op == 'y'){
+        system("cls");
+        exit(0);
+    }
+    else
+        return;
+    
 }
 
 // projectile motion
