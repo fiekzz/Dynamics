@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 # Mechanics (Dynamics) solver / calculator
+=======
+# Mechanics (dynamics) solver / calculator
+>>>>>>> ab97a2d2ed7b5dd64ec59ddb320d2d015def3b03
 
 ## This project contained
 
