@@ -1,8 +1,9 @@
 #ifndef __DISPLAYER_H
 #define __DISPLAYER_H
+#pragma once
 
 /* 
-    displayer.h
+    DISPLAYER HEADER FILE
     Help the main source file to run smoothly for the program and the user
     Contain:
     - font color
@@ -25,13 +26,17 @@ COORD CursorPosition;
 // # A function to change the color of the font
 // font color
 void Color(int color){
+    // set the color
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), color);
 }
 
 // menu displayer
 void gotoxy(int x, int y){
+    // set the cursor position in x direction
     CursorPosition.X = x;
+    // set the cursor position in y direction
     CursorPosition.Y = y;
+    // detemine the cursor position
     SetConsoleCursorPosition(console, CursorPosition);
 }
 

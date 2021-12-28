@@ -3,6 +3,7 @@
 #include <fstream>
 #include <dos.h>
 #include <time.h>
+#include <string>
 #include "dynamics.h"
 #include "displayer.h"
 
@@ -12,11 +13,14 @@
  *  github.com/fiekzz/Dynamics
  *  
  *  - Fikri Bin Hisham-muddin 2112011
- *  - Khairul Amirin 
- *  - Akmal
- *  - Alif Irfan
+ *  - 
+ *  - 
+ *  - 
  * 
  ****************************************/
+
+// The comments are not fully typed as there are too many lines to cover
+// Updates can be pushed through github repo
 
 using std::cout;
 using std::cin;
@@ -53,11 +57,15 @@ char Output(std::fstream&,std::string&);
 // main function
 int main()
 {
+    // set the font for the program
     setfont();
+    // set the font color for the program
     Color(3);
+
     do{
-        
+        // clear screen
         system("cls");
+        // menu
         gotoxy(5,3); cout << "Mechanics (Dynamics)" << endl;
         gotoxy(5,4); cout << "1 - Projectile Motion" << endl;
         gotoxy(5,5); cout << "2 - Free Fall" << endl;
@@ -65,8 +73,9 @@ int main()
         gotoxy(5,7); cout << "4 - Info" << endl;
         gotoxy(5,8); cout << "5 - Exit" << endl;
         gotoxy(5,10); cout << "Select option: ";
+        // get input menu
         char op = getch();
-
+        // menu switch
         switch(op){
             case '1': projectileMotion(); break;
             case '2': freeFall(); break;
@@ -75,30 +84,39 @@ int main()
             case '5': Exit(); break;
         }
 
-    } while(1);
+    } while(1); // loop
 }
 
 // output file
+// return a char which is Y-yes or N-no to the function
 char Output(std::fstream &oFile, std::string &path)
 {
     char output;
+
+    // loop to get the input from the user
     do{
         std::cout << std::endl;
         std::cout << "Do you want to put the results into an output file? (Y/N)" << std::endl;
         std::cout << "Enter: ";
         output = getche();
-        
     } while(output != 'y' && output != 'Y' && output != 'n' && output != 'N');
-    
+
+    // Open the output file if the user already have the saved file
     if(output == 'Y' || output == 'y'){
+
+        // The program will loop if the output file is undefined
         do{
-            std::cout << "Enter the name of file: ";
-            std::cin >> path;
+            cout << endl;
+            std::cout << "Enter the name of file including file extension (.txt): ";
+            cin.ignore();
+            getline(cin,path);
             oFile.open(path, std::fstream::app);
             if(!oFile.is_open())
-                std::cout << "Error opening the output file" << std::endl;
+                std::cout << "Error opening the existing output file" << std::endl;
+            
         } while(!oFile.is_open());
     }
+    // return y/n
     return output;
 }
 
@@ -174,7 +192,8 @@ void HorizontalPMotion()
     } while(op != '3');
 }
 
-// info
+// info about the program
+// connect to the developer with the given link
 void Info()
 {
     system("cls");
@@ -182,6 +201,7 @@ void Info()
     gotoxy(5,4); cout << "# Authored by Group 4 Section 6" << endl;
     gotoxy(5,5); cout << "# Original Source File at" << endl;
     gotoxy(5,6); cout << "# github.com/fiekzz/Dynamics" << endl;
+    gotoxy(5,7); cout << "# twitter.com/fikieee11" << endl;
     gotoxy(5,8); cout << "Press any key continue" << endl;
     gotoxy(5,9); getch();
 }
@@ -193,6 +213,7 @@ void Exit()
     system("cls");
     gotoxy(5,3); cout << "Exit the program? (Y/N)" << endl;
     gotoxy(5,4); op = getch();
+
     if(op == 'Y' || op == 'y'){
         system("cls");
         exit(0);
@@ -244,13 +265,12 @@ void P_TimeOfFlight()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+
                 oFile << Formula.showTime() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "PROJECTILE MOTION" << endl;
@@ -258,6 +278,7 @@ void P_TimeOfFlight()
             nFile.open("pmotionTime.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> angle >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -269,6 +290,7 @@ void P_TimeOfFlight()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showTime() << endl;
                     }
                 }
@@ -330,13 +352,12 @@ void P_Range()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showRange() << endl;
             }
             oFile.close();
 
-        } else if(menu == '2'){
-
-            output = Output(oFile,path);
+        } else if(menu == '2'){            
 
             system("cls");
             cout << "PROJECTILE MOTION" << endl;
@@ -344,6 +365,7 @@ void P_Range()
             nFile.open("pmotionRange.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> angle >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -355,6 +377,7 @@ void P_Range()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showRange() << endl;
                     }
                 }
@@ -415,13 +438,12 @@ void P_MaxHeight()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showMaxHeight() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "PROJECTILE MOTION" << endl;
@@ -429,6 +451,7 @@ void P_MaxHeight()
             nFile.open("pmotionHeight.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> angle >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -440,6 +463,7 @@ void P_MaxHeight()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showMaxHeight() << endl;
                     }
                 }
@@ -503,13 +527,12 @@ void P_finalVelocity()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showVelocity() << endl;
             }
             oFile.close();
 
-        } else if(menu == '2'){
-
-            output = Output(oFile,path);
+        } else if(menu == '2'){            
 
             system("cls");
             cout << "PROJECTILE MOTION" << endl;
@@ -517,6 +540,7 @@ void P_finalVelocity()
             nFile.open("pmotionfinalVelocity.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> angle >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -530,6 +554,7 @@ void P_finalVelocity()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showVfx() << " " << Formula.showVfy() << " " << Formula.showVelocity() << endl;
                     }
                 }
@@ -590,13 +615,12 @@ void F_Time_Velocity()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showTime() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -604,6 +628,7 @@ void F_Time_Velocity()
             nFile.open("timeVelocity.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> fVelocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -614,6 +639,7 @@ void F_Time_Velocity()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showTime() << endl;
                     }
                 }
@@ -671,13 +697,12 @@ void F_Time_Height()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showTime() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -685,6 +710,7 @@ void F_Time_Height()
             nFile.open("timeHeight.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> height;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -695,6 +721,7 @@ void F_Time_Height()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showTime() << endl;
                     }
                 }
@@ -753,13 +780,12 @@ void F_Height_Velocity()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showHeight() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -767,6 +793,7 @@ void F_Height_Velocity()
             nFile.open("heightVelocity.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> fVelocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -777,6 +804,7 @@ void F_Height_Velocity()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showHeight() << endl;
                     }
                 }
@@ -835,13 +863,12 @@ void F_Height_Time()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showHeight() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -849,6 +876,7 @@ void F_Height_Time()
             nFile.open("heightVelocity.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> time;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -859,6 +887,7 @@ void F_Height_Time()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showHeight() << endl;
                     }
                 }
@@ -917,13 +946,12 @@ void F_Velocity_Height()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showVelocity() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -931,6 +959,7 @@ void F_Velocity_Height()
             nFile.open("velocityHeight.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> height;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -941,6 +970,7 @@ void F_Velocity_Height()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showVelocity() << endl;
                     }
                 }
@@ -999,13 +1029,12 @@ void F_Velocity_Time()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showVelocity() << endl;
             }
             oFile.close();
 
-        } else if(menu == '2'){
-
-            output = Output(oFile,path);
+        } else if(menu == '2'){     
 
             system("cls");
             cout << "FREE FALL" << endl;
@@ -1013,6 +1042,7 @@ void F_Velocity_Time()
             nFile.open("velocityTime.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> iVelocity >> time;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -1023,6 +1053,7 @@ void F_Velocity_Time()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showVelocity() << endl;
                     }
                 }
@@ -1083,13 +1114,12 @@ void H_TimeOfFlight()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showTime() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "HORIZONTAL PROJECTILE MOTION" << endl;
@@ -1097,6 +1127,7 @@ void H_TimeOfFlight()
             nFile.open("hpmotionTime.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -1107,6 +1138,7 @@ void H_TimeOfFlight()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showTime() << endl;
                     }
                 }
@@ -1165,13 +1197,12 @@ void H_Range()
             cout << endl;
 
             if(output == 'Y' || output == 'y'){
+                
                 oFile << Formula.showRange() << endl;
             }
             oFile.close();
 
         } else if(menu == '2'){
-
-            output = Output(oFile,path);
 
             system("cls");
             cout << "HORIZONTAL PROJECTILE MOTION" << endl;
@@ -1179,6 +1210,7 @@ void H_Range()
             nFile.open("hpmotionRange.txt");
 
             if(nFile){
+                output = Output(oFile,path);
                 while(!nFile.eof()){
                     nFile >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -1189,6 +1221,7 @@ void H_Range()
                     cout << endl;
 
                     if(output == 'Y' || output == 'y'){
+                        
                         oFile << Formula.showRange() << endl;
                     }
                 }

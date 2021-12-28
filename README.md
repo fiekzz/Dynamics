@@ -1,4 +1,4 @@
-# Mechanics (dynamic) solver / calculator
+# Mechanics (Dynamics) solver / calculator
 
 ## This project contained
 
