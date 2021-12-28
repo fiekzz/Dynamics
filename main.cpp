@@ -1,200 +1,26 @@
-/*  Authored by Fiekzz
-    fikrichuck@gmail.com
-    github.com/fiekzz
-    github.com/Astranot */
-
 #include <iostream>
-#include <cmath>
 #include <iomanip>
-#include <windows.h>
-#include <conio.h>
 #include <fstream>
 #include <dos.h>
 #include <time.h>
+#include "dynamics.h"
+#include "displayer.h"
 
-#define SCREEN_WIDTH 90
-#define SCREEN_HEIGHT 26
-#define WIN_WIDTH 70
-
-HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
-COORD CursorPosition;
+/****************************************
+ *  
+ *  Authored by Group 4
+ *  github.com/fiekzz/Dynamics
+ *  
+ *  - Fikri Bin Hisham-muddin 2112011
+ *  - Khairul Amirin 
+ *  - Akmal
+ *  - Alif Irfan
+ * 
+ ****************************************/
 
 using std::cout;
 using std::cin;
 using std::endl;
-
-// class of formulas
-class formula {
-
-private:
-    // variables to be returned
-    double Time, Range, MaxHeight, Velocity, Height;
-    double Vix, Viy, Vfx, Vfy;
-    // gravity constant
-    const double Gravity = 9.8;
-    const double PI = 3.142;
-
-public:
-    // projectile motion when given angle, height, velocity
-    void P_timeOfFlight(double angle, double height, double velocity);
-    void P_range(double angle, double height, double velocity);
-    void P_maxHeight(double angle, double height, double velocity);
-    void P_finalVelocity(double angle, double height, double velocity);
-
-    // free fall
-    void F_Time_Velocity(double iVelocity, double fVelocity);
-    void F_Velocity_Time(double iVelocity, double time);
-    void F_Height_Velocity(double iVelocity, double fVelocity);
-    void F_Time_Height(double iVelocity, double height);
-    void F_Velocity_Height(double iVelocity, double height);
-    void F_Height_Time(double iVelocity, double time);
-
-    // horizontal projectile motion
-    void H_TimeOfFlight(double iHeight, double velocity);
-    void H_Range(double iHeight, double velocity);
-
-    // display the data
-    double showTime(){
-        return Time;
-    }
-    double showRange(){
-        return Range;
-    }
-    double showMaxHeight(){
-        return MaxHeight;
-    }
-    double showVelocity(){
-        return Velocity;
-    }
-    double showHeight(){
-        return Height;
-    }
-    double showVfx(){
-        return Vfx;
-    }
-    double showVfy(){
-        return Vfy;
-    }
-
-};
-
-/* ------------- PROJECTILE MOTION ------------- */
-// find time
-void formula::P_timeOfFlight(double angle, double height, double velocity)
-{    
-    // t = (Vy + pow(pow(Vy,2) + 2 * G * height),0.5) / G
-    angle = (angle * PI) / 180;
-    Time = (velocity * sin(angle) + pow(pow(velocity * sin(angle),2) + 2 * Gravity * height,0.5)) / Gravity;
-}
-// find range
-void formula::P_range(double angle, double height, double velocity)
-{
-    // Rx = Vx * t
-    angle = (angle * PI) / 180;
-    double velocity_x = velocity * cos(angle);
-    double time = (velocity * sin(angle) + pow(pow(velocity * sin(angle),2) + 2 * Gravity * height,0.5)) / Gravity;
-    Range = velocity_x * time;
-}
-// find maximum height
-void formula::P_maxHeight(double angle, double height, double velocity)
-{
-    // Vy = velocity * sin(angle)
-    // MaxHeight = initital_height + pow(velocity_y) / (2 * G)
-    angle = (angle * PI) / 180;
-    double velocity_y = velocity * sin(angle);
-    MaxHeight = height + pow(velocity_y,2) / (2 * Gravity);
-}
-
-// find final velocity when the object hits the ground
-void formula::P_finalVelocity(double angle, double height, double velocity)
-{
-    double Angle = (angle * PI) / 180;
-    Viy = velocity * sin(Angle);
-
-    P_timeOfFlight(angle, height, velocity);
-
-    Vfy = Viy + (-Gravity) * Time;
-    Vfx = velocity * cos(Angle);
-
-    Velocity = pow(pow(Vfx,2) + pow(Vfy,2),0.5);
-}
-
-/* ------------- FREE FALL ------------- */
-// find time given velocity
-void formula::F_Time_Velocity(double iVelocity, double fVelocity)
-{
-    // fVelocity = iVelocity + G * t
-    // t = (fVelocity - iVelocity) / G
-    Time = (fVelocity - iVelocity) / Gravity;
-}
-// find velocity given time
-void formula::F_Velocity_Time(double iVelocity, double time)
-{
-    // V = Vo + G * t
-    Velocity = iVelocity + Gravity * time;
-}
-// find height given velocity
-void formula::F_Height_Velocity(double iVelocity, double fVelocity)
-{
-    // fVelocity = iVelocity + G * t
-    // t = (fVelocity - iVelocity) / G
-    double time = (fVelocity - iVelocity) / Gravity;
-    Height = iVelocity * time + 0.5 * 9.8 * time;
-}
-// find time given height
-void formula::F_Time_Height(double iVelocity, double height)
-{
-    // height = iVelocity * time + 0.5 * 9.8 * pow(time,2)
-    // 0.5 * 9.8 * pow(time,2) + iVelocity * time - height = 0
-    // root1 = (-b + pow(pow(b,2) - 4 * a * c,0.5)) / (2 * a);
-    // root2 = (-b - pow(pow(b,2) - 4 * a * c,0.5)) / (2 * a);
-    double time1 = (-iVelocity + pow(pow(iVelocity,2) - 4 * Gravity * 0.5 * height * -1,0.5)) / (2 * Gravity * 0.5);
-    double time2 = (-iVelocity - pow(pow(iVelocity,2) - 4 * Gravity * 0.5 * height * -1,0.5)) / (2 * Gravity * 0.5);
-
-    if(time1 > 0)
-        Time = time1;
-    else if(time2 > 0)
-        Time = time2;
-}
-// find velocity given height
-void formula::F_Velocity_Height(double iVelocity, double height)
-{    
-    double time1 = (-iVelocity + pow(pow(iVelocity,2) - 4 * Gravity * 0.5 * height * -1,0.5)) / (2 * Gravity * 0.5);
-    double time2 = (-iVelocity - pow(pow(iVelocity,2) - 4 * Gravity * 0.5 * height * -1,0.5)) / (2 * Gravity * 0.5);
-
-    if(time1 > 0)
-        Time = time1;
-    else if(time2 > 0)
-        Time = time2;
-    
-    // V = Vo + G * t
-    Velocity = iVelocity + Gravity * Time;
-}
-// find height given time
-void formula::F_Height_Time(double iVelocity, double time)
-{
-    Height = iVelocity * time + 0.5 * Gravity * pow(time,2);
-}
-
-/* ------------- HORIZONTAL PROJECTILE MOTION ------------- */
-// time of flight given initial height and velocity
-void formula::H_TimeOfFlight(double iHeight, double velocity)
-{
-    Time = pow(2 * iHeight / Gravity,0.5);
-}
-// range of flight given initial height and velocity
-void formula::H_Range(double iHeight, double velocity)
-{
-    double time = pow(2 * iHeight / Gravity,0.5);
-    Range = velocity * time;
-}
-
-// menu displayer
-void gotoxy(int x, int y){
-    CursorPosition.X = x;
-    CursorPosition.Y = y;
-    SetConsoleCursorPosition(console, CursorPosition);
-}
 
 // main menu
 void projectileMotion();
@@ -227,10 +53,12 @@ char Output(std::fstream&,std::string&);
 // main function
 int main()
 {
+    setfont();
+    Color(3);
     do{
-
+        
         system("cls");
-        gotoxy(5,3); cout << "Mechanics (Dynamic)" << endl;
+        gotoxy(5,3); cout << "Mechanics (Dynamics)" << endl;
         gotoxy(5,4); cout << "1 - Projectile Motion" << endl;
         gotoxy(5,5); cout << "2 - Free Fall" << endl;
         gotoxy(5,6); cout << "3 - Horizontal Projectile Motion" << endl;
@@ -255,20 +83,20 @@ char Output(std::fstream &oFile, std::string &path)
 {
     char output;
     do{
-        cout << endl;
-        cout << "Do you want to put the results into an output file? (Y/N)" << endl;
-        cout << "Enter: ";
+        std::cout << std::endl;
+        std::cout << "Do you want to put the results into an output file? (Y/N)" << std::endl;
+        std::cout << "Enter: ";
         output = getche();
         
     } while(output != 'y' && output != 'Y' && output != 'n' && output != 'N');
     
     if(output == 'Y' || output == 'y'){
         do{
-            cout << "Enter the name of file: ";
-            cin >> path;
+            std::cout << "Enter the name of file: ";
+            std::cin >> path;
             oFile.open(path, std::fstream::app);
             if(!oFile.is_open())
-                cout << "Error opening the output file" << endl;
+                std::cout << "Error opening the output file" << std::endl;
         } while(!oFile.is_open());
     }
     return output;
@@ -351,10 +179,9 @@ void Info()
 {
     system("cls");
     gotoxy(5,3); cout << "# Started since 10 Dec 2021 12.00am" << endl;
-    gotoxy(5,4); cout << "# Authored by Fikri Hisham-muddin 2112011" << endl;
-    gotoxy(5,5); cout << "# fikrichuck@gmail.com" << endl;
-    gotoxy(5,6); cout << "# github.com/Astranot" << endl;
-    gotoxy(5,7); cout << "# github.com/Fiekzz" << endl;
+    gotoxy(5,4); cout << "# Authored by Group 4 Section 6" << endl;
+    gotoxy(5,5); cout << "# Original Source File at" << endl;
+    gotoxy(5,6); cout << "# github.com/fiekzz/Dynamics" << endl;
     gotoxy(5,8); cout << "Press any key continue" << endl;
     gotoxy(5,9); getch();
 }
