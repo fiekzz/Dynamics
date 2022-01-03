@@ -65,63 +65,16 @@ int main()
     Color(3);
     // set cursor off
     ShowConsoleCursor(false);
-    // initialize menu selection
-    // menu item to select menu
-    // x coordinate in y direction to display the menu
-    int menu_item = 0, x = 4;
 
-    while(1){
+    int menuSize = 4;
 
-        // the input is only valid for arrow-up, arrow-down, enter and escape button
-        // if the up / down is at its limit it will pass
-        gotoxy(2,x); Color(4); cout << "\x1a"; Color(3);
-        gotoxy(5,2); cout << "MECHANICS [Dynamics]" << endl;
-        gotoxy(5,4); cout << "Projectile Motion" << endl;
-        gotoxy(5,5); cout << "Free Fall" << endl;
-        gotoxy(5,6); cout << "Horizontal Projectile Motion" << endl;
-        gotoxy(5,7); cout << "Info" << endl;
-        gotoxy(5,8); cout << "Exit" << endl;
-        // instructions
-        gotoxy(5,15); cout << "\x18  - Up" << endl;
-        gotoxy(5,16); cout << "\x19  - Down" << endl;
-        gotoxy(5,17); cout << "[ENTER] - Select" << endl;
-        gotoxy(5,18); cout << "[ESC] - Back" << endl;
+    MenuItems mainMenu[menuSize] = {{"Projectile Motion", projectileMotion},
+                                    {"Free Fall", freeFall},
+                                    {"Horizontal Projectile Motion", HorizontalPMotion},
+                                    {"Info", Info}};
+        
+    ShowMenu(menuSize, mainMenu, "MECHANICS [Dynamics]", false);
 
-        // pause the system without displaying the message
-        system("pause>nul");
-
-        // Put the cursor down by 1
-        if(GetAsyncKeyState(VK_DOWN) < 0 && x != 8) //down button pressed
-        {
-            gotoxy(2,x); cout << "  ";
-            x++;
-            menu_item++;
-            continue;
-        }
-		// Put the cursor up by 1
-		else if(GetAsyncKeyState(VK_UP) < 0 && x != 4) //up button pressed
-        {
-            gotoxy(2,x); cout << "  ";
-            x--;
-            menu_item--;
-            continue;
-        }
-        // if the user pressed entered for the menu
-        else if(GetAsyncKeyState(VK_RETURN) < 0){ // Enter key pressed
-
-            switch(menu_item){
-                case 0: projectileMotion(); break;
-                case 1: freeFall(); break;
-                case 2: HorizontalPMotion(); break;
-                case 3: Info(); break;
-                case 4: Exit(); break;
-            }
-            
-		}
-        else if(GetAsyncKeyState(VK_ESCAPE) < 0){
-            Exit();
-        }
-    }
 }
 
 // output file
@@ -157,29 +110,23 @@ char Output(std::fstream &oFile, std::string &path)
     return output;
 }
 
+void Back() {
+    
+}
+
 // projectile motion menu
 void projectileMotion()
 {
-    char op;
-    do{
-        system("cls");
-        cout << "PROJECTILE MOTION" << endl;
-        cout << "1 - Time of flight" << endl;
-        cout << "2 - Range" << endl;
-        cout << "3 - Maximum Height" << endl;
-        cout << "4 - Final velocity" << endl;
-        cout << "5 - Back" << endl;
-        cout << "Menu: ";
-        op = getch();
-        
-        switch(op){
-            case '1': P_TimeOfFlight(); break;
-            case '2': P_Range(); break;
-            case '3': P_MaxHeight(); break;
-            case '4': P_finalVelocity(); break;
-        }
-    } while(op != '5');
     system("cls");
+    int menuSize = 4;
+
+    MenuItems mainMenu[menuSize] = {{"Time of flight", P_TimeOfFlight},
+                                    {"Range", P_Range},
+                                    {"Maximum Height", P_MaxHeight},
+                                    {"Final velocity", P_finalVelocity}};
+        
+    ShowMenu(menuSize, mainMenu, "PROJECTILE MOTION", true);
+
 }
 
 // free fall menu
@@ -245,24 +192,6 @@ void Info()
     gotoxy(5,9); system("pause");
     system("cls");
 
-}
-
-// exit
-void Exit()
-{
-    system("cls");
-    
-    gotoxy(5,3); cout << "Exit the program?" << endl;
-    gotoxy(5,5); cout << "[ENTER] - Yes" << endl;
-    gotoxy(5,6); cout << "Any Key - No" << endl;
-
-    system("pause>nul");
-
-    if(GetAsyncKeyState(VK_RETURN)){
-        system("cls");
-        exit(0);
-    }
-    system("cls");
 }
 
 // projectile motion

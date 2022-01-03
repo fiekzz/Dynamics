@@ -5,7 +5,7 @@
 /* 
     DISPLAYER HEADER FILE
     Help the main source file to run smoothly for the program and the user
-    Contain:
+    Contains:
     - font color
     - font size
     - coordinate to display the menu and data
@@ -23,6 +23,8 @@
 // # Initialize the console (terminal) location
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
+
+void Exit();
 
 // # A function to change the color of the font
 // font color
@@ -66,6 +68,106 @@ void ShowConsoleCursor(bool showFlag){
     GetConsoleCursorInfo(out, &cursorInfo);
     cursorInfo.bVisible = showFlag;
     SetConsoleCursorInfo(out, &cursorInfo);
+}
+
+struct MenuItems {
+    std::string choice;
+    void (*callback)();
+};
+
+/**
+ * @brief A function to render arrow menu
+ * 
+ * @param x Accepts coord-x start
+ * @param y Accepts coord-y start
+ * @param menuSize The max number of menu list
+ * @param menus A struct that contains menu option and callback Function
+ * @param menuTitle Menu Title
+ * @param isBack Boolean for determining is previous screen available
+ */
+void ShowMenu(int menuSize, MenuItems menus[], std::string menuTitle = "", bool isBack = false)
+{
+    const int xStart = 5, yStart = 4;
+    int menu_item = 0;
+    int x = yStart;
+
+    while(true) {
+
+        gotoxy(2, x); Color(4); std::cout << "\x1a"; Color(3);
+        gotoxy(xStart, yStart - 2); std::cout << menuTitle << std::endl;
+
+        for (int i = 0; i < menuSize; i++)
+        {
+            gotoxy(xStart, yStart + i); 
+            std::cout << menus[i].choice << std::endl;
+        }
+
+        gotoxy(xStart, yStart + menuSize);
+        std::cout << (isBack ? "Back" : "Exit") << std::endl;
+
+        gotoxy(5, 15); std::cout << "\x18  - Up" << std::endl;
+        gotoxy(5, 16); std::cout << "\x19  - Down" << std::endl;
+        gotoxy(5, 17); std::cout << "[ENTER] - Select" << std::endl;
+        gotoxy(5, 18); std::cout << "[ESC] - Back" << std::endl;
+
+        system("pause>nul");
+
+        if(GetAsyncKeyState(VK_DOWN) < 0 && x != yStart + menuSize) //down button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x++;
+            menu_item++;
+            continue;
+        }
+        // Put the cursor up by 1
+        else if(GetAsyncKeyState(VK_UP) < 0 && x != yStart) //up button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x--;
+            menu_item--;
+            continue;
+        }
+        else if(GetAsyncKeyState(VK_RETURN) < 0) // Enter key pressed
+        {
+            if (menu_item == menuSize) {
+                if (isBack) {
+                    system("cls"); break;
+                } else {
+                    Exit();
+                }
+            } else {
+                menus[menu_item].callback();
+            }
+
+		}
+        else if(GetAsyncKeyState(VK_ESCAPE) < 0)
+        {
+            if (isBack) {
+                system("cls");
+                break;
+            } else {
+                Exit();
+            }
+        }
+    }
+}
+
+// exit
+void Exit()
+{
+    system("cls");
+    
+    gotoxy(5,3); std::cout << "Exit the program?" << std::endl;
+    gotoxy(5,5); std::cout << "[ENTER] - Yes" << std::endl;
+    gotoxy(5,6); std::cout << "Any Key - No" << std::endl;
+
+    system("pause>nul");
+
+    if(GetAsyncKeyState(VK_RETURN)){
+        system("cls");
+        exit(0);
+    }
+    system("cls");
 }
 
 #endif
