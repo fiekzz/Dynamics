@@ -9,9 +9,11 @@
 
 /****************************************
  *  
- *  Authored by Group 4
- *  github.com/fiekzz/Dynamics
- *  
+ *  # Authored by Group 4 Section 6
+ *  # Since 10 Dec 2021 12.00am
+ *  # github.com/fiekzz/Dynamics
+ *  # MIT License
+ *    
  *  - Fikri Bin Hisham-muddin 2112011
  *  - 
  *  - 
@@ -19,8 +21,8 @@
  * 
  ****************************************/
 
-// The comments are not fully typed as there are too many lines to cover
-// Updates can be pushed through github repo
+// The comments are not fully covered as there are too many lines to cover
+// Updates can be requested anytime
 
 using std::cout;
 using std::cin;
@@ -61,30 +63,65 @@ int main()
     setfont();
     // set the font color for the program
     Color(3);
+    // set cursor off
+    ShowConsoleCursor(false);
+    // initialize menu selection
+    // menu item to select menu
+    // x coordinate in y direction to display the menu
+    int menu_item = 0, x = 4;
 
-    do{
-        // clear screen
-        system("cls");
-        // menu
-        gotoxy(5,3); cout << "Mechanics (Dynamics)" << endl;
-        gotoxy(5,4); cout << "1 - Projectile Motion" << endl;
-        gotoxy(5,5); cout << "2 - Free Fall" << endl;
-        gotoxy(5,6); cout << "3 - Horizontal Projectile Motion" << endl;
-        gotoxy(5,7); cout << "4 - Info" << endl;
-        gotoxy(5,8); cout << "5 - Exit" << endl;
-        gotoxy(5,10); cout << "Select option: ";
-        // get input menu
-        char op = getch();
-        // menu switch
-        switch(op){
-            case '1': projectileMotion(); break;
-            case '2': freeFall(); break;
-            case '3': HorizontalPMotion(); break;
-            case '4': Info(); break;
-            case '5': Exit(); break;
+    while(1){
+
+        // the input is only valid for arrow-up, arrow-down, enter and escape button
+        // if the up / down is at its limit it will pass
+        gotoxy(2,x); Color(4); cout << "\x1a"; Color(3);
+        gotoxy(5,2); cout << "MECHANICS [Dynamics]" << endl;
+        gotoxy(5,4); cout << "Projectile Motion" << endl;
+        gotoxy(5,5); cout << "Free Fall" << endl;
+        gotoxy(5,6); cout << "Horizontal Projectile Motion" << endl;
+        gotoxy(5,7); cout << "Info" << endl;
+        gotoxy(5,8); cout << "Exit" << endl;
+        // instructions
+        gotoxy(5,15); cout << "\x18  - Up" << endl;
+        gotoxy(5,16); cout << "\x19  - Down" << endl;
+        gotoxy(5,17); cout << "[ENTER] - Select" << endl;
+        gotoxy(5,18); cout << "[ESC] - Back" << endl;
+
+        // pause the system without displaying the message
+        system("pause>nul");
+
+        // Put the cursor down by 1
+        if(GetAsyncKeyState(VK_DOWN) < 0 && x != 8) //down button pressed
+        {
+            gotoxy(2,x); cout << "  ";
+            x++;
+            menu_item++;
+            continue;
         }
+		// Put the cursor up by 1
+		else if(GetAsyncKeyState(VK_UP) < 0 && x != 4) //up button pressed
+        {
+            gotoxy(2,x); cout << "  ";
+            x--;
+            menu_item--;
+            continue;
+        }
+        // if the user pressed entered for the menu
+        else if(GetAsyncKeyState(VK_RETURN) < 0){ // Enter key pressed
 
-    } while(1); // loop
+            switch(menu_item){
+                case 0: projectileMotion(); break;
+                case 1: freeFall(); break;
+                case 2: HorizontalPMotion(); break;
+                case 3: Info(); break;
+                case 4: Exit(); break;
+            }
+            
+		}
+        else if(GetAsyncKeyState(VK_ESCAPE) < 0){
+            Exit();
+        }
+    }
 }
 
 // output file
@@ -142,6 +179,7 @@ void projectileMotion()
             case '4': P_finalVelocity(); break;
         }
     } while(op != '5');
+    system("cls");
 }
 
 // free fall menu
@@ -150,7 +188,7 @@ void freeFall()
     char op;
     do{
         system("cls");
-        cout << "FREE FALL" << endl;  
+        cout << "FREE FALL" << endl;
         cout << "1 - Time of Fall given Velocity" << endl;
         cout << "2 - Time of Fall given Height" << endl;
         cout << "3 - Height of Fall given Velocity" << endl;
@@ -170,6 +208,7 @@ void freeFall()
             case '6': F_Velocity_Time(); break;
         }
     } while(op != '7');
+    system("cls");
 }
 
 // horizontal projectile motion menu
@@ -190,6 +229,7 @@ void HorizontalPMotion()
             case '2': H_Range(); break;
         }
     } while(op != '3');
+    system("cls");
 }
 
 // info about the program
@@ -202,25 +242,27 @@ void Info()
     gotoxy(5,5); cout << "# Original Source File at" << endl;
     gotoxy(5,6); cout << "# github.com/fiekzz/Dynamics" << endl;
     gotoxy(5,7); cout << "# twitter.com/fikieee11" << endl;
-    gotoxy(5,8); cout << "Press any key continue" << endl;
-    gotoxy(5,9); getch();
+    gotoxy(5,9); system("pause");
+    system("cls");
+
 }
 
 // exit
 void Exit()
 {
-    char op;
     system("cls");
-    gotoxy(5,3); cout << "Exit the program? (Y/N)" << endl;
-    gotoxy(5,4); op = getch();
+    
+    gotoxy(5,3); cout << "Exit the program?" << endl;
+    gotoxy(5,5); cout << "[ENTER] - Yes" << endl;
+    gotoxy(5,6); cout << "Any Key - No" << endl;
 
-    if(op == 'Y' || op == 'y'){
+    system("pause>nul");
+
+    if(GetAsyncKeyState(VK_RETURN)){
         system("cls");
         exit(0);
     }
-    else
-        return;
-    
+    system("cls");
 }
 
 // projectile motion

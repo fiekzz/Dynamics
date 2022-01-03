@@ -9,6 +9,7 @@
     - font color
     - font size
     - coordinate to display the menu and data
+    - close cursor
 */
 
 
@@ -56,6 +57,15 @@ void setfont(){
     wcscpy(font.FaceName, L"Consolas");
     // set the font according to the settings
     SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &font);
+}
+
+void ShowConsoleCursor(bool showFlag){
+    HANDLE out = GetStdHandle(STD_OUTPUT_HANDLE);
+
+    CONSOLE_CURSOR_INFO cursorInfo;
+    GetConsoleCursorInfo(out, &cursorInfo);
+    cursorInfo.bVisible = showFlag;
+    SetConsoleCursorInfo(out, &cursorInfo);
 }
 
 #endif

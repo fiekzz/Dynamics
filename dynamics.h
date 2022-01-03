@@ -5,11 +5,11 @@
 
 /* Class of formulas in Mechanics (Dynamics)
     Started since 10 December 2021
-    Written by fikri */
+    Written by group 4 section 6 eece 1313 */
 
 // # The formulas written are resorted according to the kinematics equation in the dynamics part
-// # Angles input are in degree
-// # All the calculations are assumed there are no friction and aerodynamics forces
+// # Angle inputs are in degree
+// # All the calculations are assumed that there are no friction and aerodynamics forces
 
 /*  LIST OF THE KINEMATICS EQUATIONS
 
