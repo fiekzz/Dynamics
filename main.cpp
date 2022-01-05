@@ -53,8 +53,10 @@ void F_Velocity_Time();
 void H_TimeOfFlight();
 void H_Range();
 
-// output file
-char Output(std::fstream&,std::string&);
+// enter data by typing
+void inputType();
+// enter data by input file
+void inputFile();
 
 // main function
 int main()
@@ -77,106 +79,45 @@ int main()
 
 }
 
-// output file
-// return a char which is Y-yes or N-no to the function
-char Output(std::fstream &oFile, std::string &path)
-{
-    char output;
-
-    // loop to get the input from the user
-    do{
-        std::cout << std::endl;
-        std::cout << "Do you want to put the results into an output file? (Y/N)" << std::endl;
-        std::cout << "Enter: ";
-        output = getche();
-    } while(output != 'y' && output != 'Y' && output != 'n' && output != 'N');
-
-    // Open the output file if the user already have the saved file
-    if(output == 'Y' || output == 'y'){
-
-        // The program will loop if the output file is undefined
-        do{
-            cout << endl;
-            std::cout << "Enter the name of file including file extension (.txt): ";
-            cin.ignore();
-            getline(cin,path);
-            oFile.open(path, std::fstream::app);
-            if(!oFile.is_open())
-                std::cout << "Error opening the existing output file" << std::endl;
-            
-        } while(!oFile.is_open());
-    }
-    // return y/n
-    return output;
-}
-
-void Back() {
-    
-}
-
 // projectile motion menu
 void projectileMotion()
 {
     system("cls");
     int menuSize = 4;
 
-    MenuItems mainMenu[menuSize] = {{"Time of flight", P_TimeOfFlight},
-                                    {"Range", P_Range},
-                                    {"Maximum Height", P_MaxHeight},
-                                    {"Final velocity", P_finalVelocity}};
+    MenuItems pmotionMenu[menuSize] = {{"Time of flight", P_TimeOfFlight},
+                                       {"Range", P_Range},
+                                       {"Maximum Height", P_MaxHeight},
+                                       {"Final velocity", P_finalVelocity}};
         
-    ShowMenu(menuSize, mainMenu, "PROJECTILE MOTION", true);
+    ShowMenu(menuSize, pmotionMenu, "PROJECTILE MOTION", true);
 
 }
 
 // free fall menu
 void freeFall()
 {
-    char op;
-    do{
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "1 - Time of Fall given Velocity" << endl;
-        cout << "2 - Time of Fall given Height" << endl;
-        cout << "3 - Height of Fall given Velocity" << endl;
-        cout << "4 - Height of Fall given Time" << endl;
-        cout << "5 - Final velocity given Height" << endl;
-        cout << "6 - Final Velocity given Time" << endl;
-        cout << "7 - Back" << endl;
-        cout << "Menu: " << endl;
-        op = getch();
-
-        switch(op){
-            case '1': F_Time_Velocity(); break;
-            case '2': F_Time_Height(); break;
-            case '3': F_Height_Velocity(); break;
-            case '4': F_Height_Time(); break;
-            case '5': F_Velocity_Height(); break;
-            case '6': F_Velocity_Time(); break;
-        }
-    } while(op != '7');
     system("cls");
+    int menuSize = 6;
+    MenuItems freeFallMenu[menuSize] = {{"Time of Fall given Velocity", F_Time_Velocity},
+                                        {"Time of Fall given Height", F_Time_Height},
+                                        {"Height of Fall given Velocity", F_Height_Velocity},
+                                        {"Height of Fall given Time", F_Height_Time},
+                                        {"Final velocity given Height", F_Velocity_Height},
+                                        {"Final velocity given Time", F_Velocity_Time}};
+
+    ShowMenu(menuSize,freeFallMenu,"FREE FALL", true);
 }
 
 // horizontal projectile motion menu
 void HorizontalPMotion()
 {
-    char op;
-    do{
-        system("cls");
-        cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-        cout << "1 - Time of flight" << endl;
-        cout << "2 - Range" << endl;
-        cout << "3 - Back" << endl;
-        cout << "Menu: ";
-        op = getch();
-
-        switch(op){
-            case '1': H_TimeOfFlight(); break;
-            case '2': H_Range(); break;
-        }
-    } while(op != '3');
     system("cls");
+    int menuSize = 2;
+    MenuItems hpmMenu[menuSize] = {{"Time of flight", H_TimeOfFlight},
+                                   {"Range", H_Range}};
+    
+    ShowMenu(menuSize,hpmMenu,"HORIZONTAL PROJECTILE MOTION", true);
 }
 
 // info about the program
@@ -216,10 +157,12 @@ void P_TimeOfFlight()
         cout << "Enter: ";
         menu = getche();
         
+        
         if(menu == '1'){
 
             output = Output(oFile, path);
 
+            ShowConsoleCursor(true);
             system("cls");
             cout << "PROJECTILE MOTION" << endl;
             cout << "Find time of flight when given" << endl;
@@ -240,6 +183,7 @@ void P_TimeOfFlight()
                 oFile << Formula.showTime() << endl;
             }
             oFile.close();
+            ShowConsoleCursor(false);
 
         } else if(menu == '2'){
 
@@ -250,6 +194,7 @@ void P_TimeOfFlight()
 
             if(nFile){
                 output = Output(oFile,path);
+                ShowConsoleCursor(true);
                 while(!nFile.eof()){
                     nFile >> angle >> height >> velocity;
                     cout << std::setprecision(2) << std::fixed << endl;
@@ -267,6 +212,7 @@ void P_TimeOfFlight()
                 }
                 nFile.close();
                 oFile.close();
+                ShowConsoleCursor(false);
             } else {
                 cout << "Error opening the file!" << endl;
             }
@@ -279,7 +225,7 @@ void P_TimeOfFlight()
             cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
         op = getch();
 
-    } while(op != 'e');
+    } while(op != 'e');    
 
 }
 void P_Range()

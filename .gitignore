@@ -1,2 +1,5 @@
 /.vscode
 /.vs
+/CppProperties.json
+/.build.bat
+/main.exe
