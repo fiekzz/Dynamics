@@ -1,10 +1,4 @@
 #include <iostream>
-#include <iomanip>
-#include <fstream>
-#include <dos.h>
-#include <time.h>
-#include <string>
-#include "dynamics.h"
 #include "displayer.h"
 
 /****************************************
@@ -13,7 +7,7 @@
  *  # Since 10 Dec 2021 12.00am
  *  # github.com/fiekzz/Dynamics
  *  # MIT License
- *    
+ *  
  *  - Fikri Bin Hisham-muddin 2112011
  *  - 
  *  - 
@@ -36,28 +30,28 @@ void Info();
 void Exit();
 
 // projectile motion menu
-void P_TimeOfFlight();
-void P_Range();
-void P_MaxHeight();
-void P_finalVelocity();
+void P_TimeOfFlight(); // 0
+void P_Range(); // 1
+void P_MaxHeight(); // 2
+void P_finalVelocity(); // 3
 
 // free fall menu
-void F_Time_Velocity();
-void F_Time_Height();
-void F_Height_Velocity();
-void F_Height_Time();
-void F_Velocity_Height();
-void F_Velocity_Time();
+void F_Time_Velocity(); // 4
+void F_Time_Height(); // 5
+void F_Height_Velocity(); // 6
+void F_Height_Time(); // 7
+void F_Velocity_Height(); // 8
+void F_Velocity_Time(); // 9
 
 // horizontal motion menu
-void H_TimeOfFlight();
-void H_Range();
+void H_TimeOfFlight(); //10
+void H_Range(); // 11
 
 // enter data by typing
 void inputType();
 // enter data by input file
 void inputFile();
-
+// alipan
 // main function
 int main()
 {
@@ -75,7 +69,7 @@ int main()
                                     {"Horizontal Projectile Motion", HorizontalPMotion},
                                     {"Info", Info}};
         
-    ShowMenu(menuSize, mainMenu, "MECHANICS [Dynamics]", false);
+    showMenu(menuSize, mainMenu, "MECHANICS [Dynamics]", false);
 
 }
 
@@ -90,8 +84,7 @@ void projectileMotion()
                                        {"Maximum Height", P_MaxHeight},
                                        {"Final velocity", P_finalVelocity}};
         
-    ShowMenu(menuSize, pmotionMenu, "PROJECTILE MOTION", true);
-
+    showMenu(menuSize, pmotionMenu, "PROJECTILE MOTION", true);
 }
 
 // free fall menu
@@ -106,7 +99,7 @@ void freeFall()
                                         {"Final velocity given Height", F_Velocity_Height},
                                         {"Final velocity given Time", F_Velocity_Time}};
 
-    ShowMenu(menuSize,freeFallMenu,"FREE FALL", true);
+    showMenu(menuSize,freeFallMenu,"FREE FALL", true);
 }
 
 // horizontal projectile motion menu
@@ -117,7 +110,7 @@ void HorizontalPMotion()
     MenuItems hpmMenu[menuSize] = {{"Time of flight", H_TimeOfFlight},
                                    {"Range", H_Range}};
     
-    ShowMenu(menuSize,hpmMenu,"HORIZONTAL PROJECTILE MOTION", true);
+    showMenu(menuSize,hpmMenu,"HORIZONTAL PROJECTILE MOTION", true);
 }
 
 // info about the program
@@ -129,1032 +122,151 @@ void Info()
     gotoxy(5,4); cout << "# Authored by Group 4 Section 6" << endl;
     gotoxy(5,5); cout << "# Original Source File at" << endl;
     gotoxy(5,6); cout << "# github.com/fiekzz/Dynamics" << endl;
-    gotoxy(5,7); cout << "# twitter.com/fikieee11" << endl;
     gotoxy(5,9); system("pause");
     system("cls");
-
 }
 
 // projectile motion
-void P_TimeOfFlight()
+void P_TimeOfFlight() // 0
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double angle, height, velocity, result;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "PROJECTILE MOTION" << endl;
-        cout << "Time of flight" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'pmotionTime.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            ShowConsoleCursor(true);
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Find time of flight when given" << endl;
-            cout << "Angle (deg).........: ";
-            cin >> angle;
-            cout << "Initial Height (m)..: ";
-            cin >> height;
-            cout << "Velocity (m/s)......: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.P_timeOfFlight(angle,height,velocity);
-            cout << "Time (s)............: " << Formula.showTime() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-
-                oFile << Formula.showTime() << endl;
-            }
-            oFile.close();
-            ShowConsoleCursor(false);
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("pmotionTime.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                ShowConsoleCursor(true);
-                while(!nFile.eof()){
-                    nFile >> angle >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Angle (deg).........: " << angle << endl;
-                    cout << "Initial Height (m)..: " << height << endl;
-                    cout << "Velocity (m/s)......: " << velocity << endl;
-                    Formula.P_timeOfFlight(angle,height,velocity);
-                    cout << "Time (s)............: " << Formula.showTime() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showTime() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-                ShowConsoleCursor(false);
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        op = getch();
-
-    } while(op != 'e');    
-
+    questionItems item;
+    item.question[0] = "Angle (deg).........: ";
+    item.question[1] = "Initial Height (m)..: ";
+    item.question[2] = "Velocity (m/s)......: ";
+    item.answer[0] = "Time (s)............: ";
+    item.size = 3;
+    item.type = 0;
+    ShowMenu("PROJECTILE MOTION", "Time of flight","pmotionTime.txt",item);
+    system("cls");
 }
-void P_Range()
+void P_Range() // 1
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double angle, height, velocity, result;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "PROJECTILE MOTION" << endl;
-        cout << "Range of flight" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'pmotionRange.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Find range of flight when given" << endl;
-            cout << "Angle (deg).........: ";
-            cin >> angle;
-            cout << "Initial height (m)..: ";
-            cin >> height;
-            cout << "Velocity (m/s)......: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.P_range(angle,height,velocity);
-            cout << "Range (m)...........: " << Formula.showRange() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showRange() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){            
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("pmotionRange.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> angle >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Angle (deg).........: " << angle << endl;
-                    cout << "Initial Height (m)..: " << height << endl;
-                    cout << "Velocity (m/s)......: " << velocity << endl;
-                    Formula.P_range(angle,height,velocity);
-                    cout << "Range (m)...........: " << Formula.showRange() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showRange() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Angle (deg).........: ";
+    item.question[1] = "Initial Height (m)..: ";
+    item.question[2] = "Velocity (m/s)......: ";
+    item.answer[0] = "Range (m)...........: ";
+    item.size = 3;
+    item.type = 1;
+    ShowMenu("PROJECTILE MOTION", "Range of flight","pmotionRange.txt",item);
+    system("cls");
 }
-void P_MaxHeight()
+void P_MaxHeight() // 2
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double angle, height, velocity, result;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "PROJECTILE MOTION" << endl;
-        cout << "Maximum height of flight" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'pmotionHeight.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Find maximum height of flight when given" << endl;
-            cout << "Angle (rad)..............: ";
-            cin >> angle;
-            cout << "Initial height (m).......: ";
-            cin >> height;
-            cout << "Velocity (m/s)...........: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.P_maxHeight(angle,height,velocity);
-            cout << "Max Height (m)...........: " << Formula.showMaxHeight() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showMaxHeight() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("pmotionHeight.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> angle >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Angle (rad).............: " << angle << endl;
-                    cout << "Initial Height (m)......: " << height << endl;
-                    cout << "Velocity (m/s)..........: " << velocity << endl;
-                    Formula.P_maxHeight(angle,height,velocity);
-                    cout << "Max Height(m)...........: " << Formula.showMaxHeight() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showMaxHeight() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Angle (deg).........: ";
+    item.question[1] = "Initial Height (m)..: ";
+    item.question[2] = "Velocity (m/s)......: ";
+    item.answer[0] = "Max Height(m)...........: ";
+    item.size = 3;
+    item.type = 2;
+    ShowMenu("PROJECTILE MOTION", "Maximum height of flight","pmotionHeight.txt",item);
+    system("cls");
 }
 
-void P_finalVelocity()
+void P_finalVelocity() // 3
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double angle, height, velocity, result;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "PROJECTILE MOTION" << endl;
-        cout << "Final velocity when the object hits the ground" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'pmotionfinalVelocity.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Find maximum height of flight when given" << endl;
-            cout << "Angle (deg).......................: ";
-            cin >> angle;
-            cout << "Initial height (m)................: ";
-            cin >> height;
-            cout << "Velocity (m/s)....................: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.P_finalVelocity(angle,height,velocity);
-            cout << "Final velocity x-direction (m/s)..: " << Formula.showVfx() << endl;
-            cout << "Final velocity y-direction (m/s)..: " << Formula.showVfy() << endl;
-            cout << "Final velocity (m/s)..............: " << Formula.showVelocity() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showVelocity() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){            
-
-            system("cls");
-            cout << "PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("pmotionfinalVelocity.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> angle >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Angle (rad).............: " << angle << endl;
-                    cout << "Initial Height (m)......: " << height << endl;
-                    cout << "Velocity (m/s)..........: " << velocity << endl;
-                    Formula.P_finalVelocity(angle,height,velocity);
-                    cout << "Final velocity x-direction (m/s)..: " << Formula.showVfx() << endl;
-                    cout << "Final velocity y-direction (m/s)..: " << Formula.showVfy() << endl;
-                    cout << "Final velocity (m/s)..............: " << Formula.showVelocity() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showVfx() << " " << Formula.showVfy() << " " << Formula.showVelocity() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Angle (deg).........: ";
+    item.question[1] = "Initial Height (m)..: ";
+    item.question[2] = "Velocity (m/s)......: ";
+    item.answer[0] = "Final velocity x-direction (m/s)..: ";
+    item.answer[1] = "Final velocity y-direction (m/s)..: ";
+    item.answer[2] = "Final velocity (m/s)..............: ";
+    item.size = 3;
+    item.type = 3;
+    ShowMenu("PROJECTILE MOTION", "Final velocity when the object hits the ground","pmotionfinalVelocity.txt",item);
+    system("cls");
 }
 
 // free fall menu
-void F_Time_Velocity()
+void F_Time_Velocity() // 4
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, fVelocity;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Time of fall given velocity" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'timeVelocity.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find time of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Final velocity (m/s).....: ";
-            cin >> fVelocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Time_Velocity(iVelocity,fVelocity);
-            cout << "Time (s).................: " << Formula.showTime() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showTime() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("timeVelocity.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> fVelocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Final velocity (m/s).....: " << fVelocity << endl;
-                    Formula.F_Time_Velocity(iVelocity,fVelocity);
-                    cout << "Time (s).................: " << Formula.showTime() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showTime() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Final velocity (m/s).....: ";
+    item.answer[0] = "Time (s).................: ";
+    item.size = 2;
+    item.type = 4;
+    ShowMenu("FREE FALL", "Time of fall given velocity","timeVelocity.txt",item);
+    system("cls");
 }
-void F_Time_Height()
+void F_Time_Height() // 5
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, height;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Time of fall given Height" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'timeHeight.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find time of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Height of fall (m).......: ";
-            cin >> height;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Time_Height(iVelocity,height);
-            cout << "Time (s).................: " << Formula.showTime() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showTime() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("timeHeight.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> height;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Height of fall...........: " << height << endl;
-                    Formula.F_Time_Height(iVelocity,height);
-                    cout << "Time (s).................: " << Formula.showTime() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showTime() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Height of fall...........: ";
+    item.answer[0] = "Time (s).................: ";
+    item.size = 2;
+    item.type = 5;
+    ShowMenu("FREE FALL", "Time of fall given height","timeHeight.txt",item);
+    system("cls");
 }
-void F_Height_Velocity()
+void F_Height_Velocity() // 6
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, fVelocity;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Height of fall given velocity" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'heightVelocity.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find height of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Final velocity (m/s).....: ";
-            cin >> fVelocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Height_Velocity(iVelocity,fVelocity);
-            cout << "Height (m)...............: " << Formula.showHeight() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showHeight() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("heightVelocity.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> fVelocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Final velocity (m/s).....: " << fVelocity << endl;
-                    Formula.F_Height_Velocity(iVelocity,fVelocity);
-                    cout << "Height (m)...............: " << Formula.showHeight() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showHeight() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Final velocity (m/s).....: ";
+    item.answer[0] = "Height (m)...............: ";
+    item.size = 2;
+    item.type = 6;
+    ShowMenu("FREE FALL", "Height given velocity","heightVelocity.txt",item);
+    system("cls");
 }
-void F_Height_Time()
+void F_Height_Time() // 7
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, time;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Height of fall given time" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'heightTime.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find height of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Time of fall (s).........: ";
-            cin >> time;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Height_Time(iVelocity,time);
-            cout << "Height (m)...............: " << Formula.showHeight() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showHeight() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("heightVelocity.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> time;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Final velocity (m/s).....: " << time << endl;
-                    Formula.F_Height_Time(iVelocity,time);
-                    cout << "Height (m)...............: " << Formula.showHeight() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showHeight() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Time of fall (s).........: ";
+    item.answer[0] = "Height (m)...............: ";
+    item.size = 2;
+    item.type = 7;
+    ShowMenu("FREE FALL", "Height of fall given time","heightTime.txt",item);
+    system("cls");
 }
-void F_Velocity_Height()
+void F_Velocity_Height() // 8
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, height;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Velocity of fall given height" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'velocityHeight.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find velocity of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Height of fall (m).......: ";
-            cin >> height;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Velocity_Height(iVelocity,height);
-            cout << "Velocity (m/s)...........: " << Formula.showVelocity() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showVelocity() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("velocityHeight.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> height;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Height of fall (m).......: " << height << endl;
-                    Formula.F_Velocity_Height(iVelocity,height);
-                    cout << "Velocity (m/s)...........: " << Formula.showVelocity() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showVelocity() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Height of fall (m).......: ";
+    item.answer[0] = "Velocity (m/s)...........: ";
+    item.size = 2;
+    item.type = 8;
+    ShowMenu("FREE FALL", "Velocity of fall given height","velocityHeight.txt",item);
+    system("cls");
 }
-void F_Velocity_Time()
+void F_Velocity_Time() // 9
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double iVelocity, time;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "FREE FALL" << endl;
-        cout << "Velocity of fall given height" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'velocityTime.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Find velocity of fall given" << endl;
-            cout << "Initital velocity (m/s)..: ";
-            cin >> iVelocity;
-            cout << "Time of fall (m).........: ";
-            cin >> time;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.F_Velocity_Time(iVelocity,time);
-            cout << "Height (m)...............: " << Formula.showVelocity() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showVelocity() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){     
-
-            system("cls");
-            cout << "FREE FALL" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("velocityTime.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> iVelocity >> time;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital velocity (m/s)..: " << iVelocity << endl;
-                    cout << "Time of fall (s).........: " << time << endl;
-                    Formula.F_Velocity_Time(iVelocity,time);
-                    cout << "Velocity (m/s)...............: " << Formula.showVelocity() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showVelocity() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital velocity (m/s)..: ";
+    item.question[1] = "Time of fall (m).........: ";
+    item.answer[0] = "Velocity (m/s)...........: ";
+    item.size = 2;
+    item.type = 9;
+    ShowMenu("FREE FALL", "Velocity of fall given time","velocityTime.txt",item);
+    system("cls");
 }
 
 // horizontal motion menu
-void H_TimeOfFlight()
+void H_TimeOfFlight() // 10
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double height, velocity;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-        cout << "Time of flight" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'hpmotionTime.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-            cout << "Time of flight given" << endl;
-            cout << "Initital height (m)..: ";
-            cin >> height;
-            cout << "Velocity (m/s).......: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.H_TimeOfFlight(height,velocity);
-            cout << "Time (s).............: " << Formula.showTime() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showTime() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("hpmotionTime.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital Height (m)..: " << height << endl;
-                    cout << "Velocity (m/s).......: " << velocity << endl;
-                    Formula.H_TimeOfFlight(height,velocity);
-                    cout << "Time (s).............: " << Formula.showTime() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showTime() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital height (m)..: ";
+    item.question[1] = "Velocity (m/s).......: ";
+    item.answer[0] = "Time (s).............: ";
+    item.size = 2;
+    item.type = 10;
+    ShowMenu("HORIZONTAL PROJECTILE MOTION", "Time of flight","hpmotionTime.txt",item);
+    system("cls");
 }
-void H_Range()
+void H_Range() // 11
 {
-    formula Formula;
-    std::ifstream nFile;
-    std::fstream oFile;
-    std::string path;
-    double height, velocity;
-    char op, output;
-    char menu;
-
-    do{
-
-        system("cls");
-        cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-        cout << "Range" << endl;
-        cout << "1 - Enter data by typing" << endl;
-        cout << "2 - Enter data by input file 'hpmotionRange.txt'" << endl;
-        cout << "3 - back" << endl;
-        cout << "Enter: ";
-        menu = getche();
-        
-        if(menu == '1'){
-
-            output = Output(oFile, path);
-
-            system("cls");
-            cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-            cout << "Range" << endl;
-            cout << "Initital height (m)..: ";
-            cin >> height;
-            cout << "Velocity (m/s).......: ";
-            cin >> velocity;
-
-            cout << std::setprecision(2) << std::fixed << endl;
-            Formula.H_Range(height,velocity);
-            cout << "Range (m)............: " << Formula.showRange() << endl;
-            cout << endl;
-
-            if(output == 'Y' || output == 'y'){
-                
-                oFile << Formula.showRange() << endl;
-            }
-            oFile.close();
-
-        } else if(menu == '2'){
-
-            system("cls");
-            cout << "HORIZONTAL PROJECTILE MOTION" << endl;
-            cout << "Obtaining the file.." << endl;
-            nFile.open("hpmotionRange.txt");
-
-            if(nFile){
-                output = Output(oFile,path);
-                while(!nFile.eof()){
-                    nFile >> height >> velocity;
-                    cout << std::setprecision(2) << std::fixed << endl;
-                    cout << "Initital Height (m)..: " << height << endl;
-                    cout << "Velocity (m/s).......: " << velocity << endl;
-                    Formula.H_Range(height,velocity);
-                    cout << "Range (s)............: " << Formula.showRange() << endl;
-                    cout << endl;
-
-                    if(output == 'Y' || output == 'y'){
-                        
-                        oFile << Formula.showRange() << endl;
-                    }
-                }
-                nFile.close();
-                oFile.close();
-            } else {
-                cout << "Error opening the file!" << endl;
-            }
-        
-        } else if(menu == '3')
-            break;
-        
-        if(menu == '1' || menu == '2')
-            cout << "Press any key to repeat the calculation or press 'e' to back" << endl;
-        
-        op = getch();
-
-    } while(op != 'e');
+    questionItems item;
+    item.question[0] = "Initital height (m)..: ";
+    item.question[1] = "Velocity (m/s).......: ";
+    item.answer[0] = "Range (m)............: ";
+    item.size = 2;
+    item.type = 11;
+    ShowMenu("HORIZONTAL PROJECTILE MOTION", "Range","hpmotionRange.txt",item);
+    system("cls");
 }

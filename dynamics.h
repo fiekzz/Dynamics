@@ -21,6 +21,7 @@
 
 */
 
+// fikri
 // class of formulas
 class formula {
 

@@ -12,10 +12,11 @@
     - close cursor
 */
 
-
+// mirin
 #include <windows.h>
 #include <conio.h>
 #include <stdlib.h>
+#include <fstream>
 #include "dynamics.h"
 
 #define SCREEN_WIDTH 90
@@ -26,9 +27,9 @@
 HANDLE console = GetStdHandle(STD_OUTPUT_HANDLE);
 COORD CursorPosition;
 
-void Exit();
-void Output();
-void inputMenu();
+using std::cout;
+using std::cin;
+using std::endl;
 
 // # A function to change the color of the font
 // font color
@@ -81,12 +82,12 @@ struct MenuItems {
     // menu function
     void (*callback)();
 };
-
+// question items object
 struct questionItems {
-    // menu string
-    std::string choice;
-    // menu function
-    void (*callback)(std::string[]);
+    std::string question[3];
+    std::string answer[3];
+    int type;
+    int size;
 };
 
 /**
@@ -102,8 +103,14 @@ struct questionItems {
  */
 // menu function to display menu and call function
 
+void Exit();
+bool Output(std::fstream &, std::string &);
+void inputData(int,questionItems, std::string);
+double calcQuestion(int,double[3],double[3]);
+// void inputMenu();
+// double calcQuestion();
 
-void ShowMenu(int menuSize, MenuItems menus[], std::string menuTitle = "", bool isBack = false)
+void showMenu(int menuSize, MenuItems menus[], std::string menuTitle = "", bool isBack = false)
 {
     // const location to display menu
     const int xStart = 5, yStart = 4;
@@ -180,6 +187,200 @@ void ShowMenu(int menuSize, MenuItems menus[], std::string menuTitle = "", bool 
     }
 }
 
+void ShowMenu(std::string menuTitle, std::string menuQuestion, std::string inputFile, questionItems Item){
+    
+    system("cls");
+    // const location to display menu
+    const int xStart = 5, yStart = 4;
+    // menu item location in array object
+    int menu_item = 0;
+    // location of x in y direction
+    int x = yStart;
+
+    int menuSize = 2;
+
+    while(true) {
+
+        gotoxy(2,x); Color(4); std::cout << "\x1a"; Color(3);
+        // display title for menu items
+        gotoxy(xStart, yStart - 2); std::cout << menuTitle << " - " << menuQuestion << std::endl;
+
+        gotoxy(xStart, yStart); std::cout << "Enter data by typing" << endl;
+        gotoxy(xStart, yStart + 1); std::cout << "Enter data by input file " << inputFile << endl;
+
+        // check if there is another page before the displaying page
+        // if there is, loop will break to go to previous page
+        // otherwise, loop will break and run exit function to exit the program
+        gotoxy(xStart, yStart + menuSize); std::cout << "Back" << endl;
+        
+        // display instructions
+        gotoxy(5, 15); std::cout << "\x18  - Up" << std::endl;
+        gotoxy(5, 16); std::cout << "\x19  - Down" << std::endl;
+        gotoxy(5, 17); std::cout << "[ENTER] - Select" << std::endl;
+        gotoxy(5, 18); std::cout << "[ESC] - Back" << std::endl;
+        // gettting input key
+        system("pause>nul");
+
+        // put the cursor down by 1 until the lowest choice of menu
+        if(GetAsyncKeyState(VK_DOWN) < 0 && x != yStart + menuSize) //down button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x++;
+            menu_item++;
+            continue;
+        }
+        // put the cursor up by 1 until the highest choice of menu
+        else if(GetAsyncKeyState(VK_UP) < 0 && x != yStart) //up button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x--;
+            menu_item--;
+            continue;
+        }
+        else if(GetAsyncKeyState(VK_RETURN) < 0) // Enter key pressed
+        {
+            // check if the selected menu is the last choice 'back'
+            if (menu_item == menuSize) {
+                system("cls");
+                break;
+            } else {
+                inputData(menu_item,Item,inputFile);
+                system("cls");
+            }
+
+		}
+        else if(GetAsyncKeyState(VK_ESCAPE) < 0)
+        {
+            system("cls");
+            break;
+        }
+
+    }
+}
+
+void inputData(int menu_item, questionItems Item, std::string inputFile)
+{
+    bool output;
+    std::ifstream nFile;
+    std::fstream oFile;
+    std::string path;
+    formula Formula;
+    double angle,height,velocity,result;
+    double input[5];
+    int i, space = 2;
+    int type = Item.type;
+    double answer3[3];
+    double answer;
+    // const location to display menu
+    const int xStart = 5, yStart = 4;
+    if(menu_item == 0)
+    {
+        output = Output(oFile,path);
+        system("cls");
+        
+        for(i = 0; i < Item.size; i++){
+            gotoxy(xStart,yStart + i); cout << Item.question[i]; ShowConsoleCursor(true); cin >> input[i]; ShowConsoleCursor(false);
+        }
+        cin.ignore();
+
+        answer = calcQuestion(type,input,answer3);
+
+        if(answer == -3){
+            for(int j = 0; j < 3; j++){
+                gotoxy(xStart,yStart + i + j + 1); cout << Item.answer[j] << answer3[j] << endl;
+            }
+        } else {
+            gotoxy(xStart,yStart + i + 1); cout << Item.answer[0] << answer << endl;
+        }
+        
+        if(output)
+        {
+            if(answer == -3){
+                for(int j = 0; j < 3; j++){
+                    oFile << answer3[j] << endl;
+                }
+            } else {
+                oFile << answer << endl;
+            }
+            oFile.close();
+        }
+        space += Item.size;
+        
+    } else if(menu_item == 1){
+        gotoxy(xStart, yStart - 2); cout << "Obtaining the file.." << endl;
+        nFile.open(inputFile);
+        output = Output(oFile,path);
+        system("cls");
+        if(nFile){
+            
+            while(!nFile.eof()){
+                if(type <= 3){
+                    nFile >> input[0] >> input[1] >> input[2];
+                }   
+                else {
+                    nFile >> input[0] >> input[1];
+                }
+                    
+                for(i = 0; i < Item.size; i++){
+                    gotoxy(xStart,yStart + i); cout << Item.question[i] << input[i] << endl;
+                }
+
+                answer = calcQuestion(type,input,answer3);
+
+                if(answer == -3){
+                    for(int j = 0; j < 3; j++){
+                        gotoxy(xStart,yStart + i + j + 1); cout << Item.answer[j] << answer3[j] << endl;
+                    }
+                } else {
+                    gotoxy(xStart,yStart + i + 1); cout << Item.answer[0] << answer << endl;
+                }
+
+                if(output){
+                    if(answer == -3){
+                        for(int j = 0; j < 3; j++){
+                            oFile << answer3[j] << endl;
+                        }
+                    } else {
+                        oFile << answer << endl;
+                    }
+                }
+                space += Item.size;
+            }
+            oFile.close();
+            nFile.close();
+        } else {
+            gotoxy(xStart,yStart); cout << "Error opening the file!" << endl;
+        }
+    }
+    
+    gotoxy(xStart, yStart + i + space); system("pause");
+    system("cls");
+}
+
+double calcQuestion(int type, double input[3], double answer3[3])
+{
+    formula Formula;
+    switch(type)
+    {
+        case 0: Formula.P_timeOfFlight(input[0],input[1],input[2]); return Formula.showTime();
+        case 1: Formula.P_range(input[0],input[1],input[2]); return Formula.showRange();
+        case 2: Formula.P_maxHeight(input[0],input[1],input[2]); return Formula.showMaxHeight();
+        case 3: Formula.P_finalVelocity(input[0],input[1],input[2]);
+                answer3[0] = Formula.showVfx();
+                answer3[1] = Formula.showVfy();
+                answer3[2] = Formula.showVelocity(); return -3;
+        case 4: Formula.F_Time_Velocity(input[0],input[1]); return Formula.showTime();
+        case 5: Formula.F_Time_Height(input[0],input[1]); return Formula.showTime();
+        case 6: Formula.F_Height_Velocity(input[0],input[1]); return Formula.showHeight();
+        case 7: Formula.F_Height_Time(input[0],input[1]); return Formula.showHeight();
+        case 8: Formula.F_Velocity_Height(input[0],input[1]); return Formula.showVelocity();
+        case 9: Formula.F_Velocity_Time(input[0],input[1]); return Formula.showVelocity();
+        case 10: Formula.H_TimeOfFlight(input[0],input[1]); return Formula.showTime();
+        case 11: Formula.H_Range(input[0],input[1]); return Formula.showRange();
+    }
+    return 404;
+}
+
 // exit
 void Exit()
 {
@@ -202,36 +403,66 @@ void Exit()
 // return a char which is Y-yes or N-no to the function
 #include <string>
 
-char Output(std::fstream &oFile, std::string &path)
+bool Output(std::fstream &oFile, std::string &path)
 {
-    char output;
+    // char output;
+    system("cls");
+    // const location to display menu
+    const int xStart = 5, yStart = 4;
+    // menu item location in array object
+    int menu_item = 0;
+    // location of x in y direction
+    int x = yStart;
+    int menuSize = 2;
 
-    // loop to get the input from the user
-    do{
-        std::cout << std::endl;
-        std::cout << "Do you want to put the results into an output file? (Y/N)" << std::endl;
-        std::cout << "Enter: ";
-        output = getche();
-    } while(output != 'y' && output != 'Y' && output != 'n' && output != 'N');
+    while(true) {
 
-    // Open the output file if the user already have the saved file
-    if(output == 'Y' || output == 'y'){
+        gotoxy(2,x); Color(4); std::cout << "\x1a"; Color(3);
+        // display title for menu items
+        gotoxy(xStart, yStart - 2); std::cout << "Do you want to put the results into an output file?" << std::endl;
+        gotoxy(xStart, yStart); std::cout << "Yes" << endl;
+        gotoxy(xStart, yStart + 1); std::cout << "No" << endl;
 
-        // The program will loop if the output file is undefined
-        do{
-            std::cout << std::endl;
-            std::cout << "Enter the name of file including file extension (.txt): ";
-            std::cin.ignore();
-            getline(std::cin,path);
-            oFile.open(path, std::fstream::app);
-            if(!oFile.is_open())
-                std::cout << "Error opening the existing output file" << std::endl;
-            
-        } while(!oFile.is_open());
+        
+        // display instructions
+        gotoxy(5, 15); std::cout << "\x18  - Up" << std::endl;
+        gotoxy(5, 16); std::cout << "\x19  - Down" << std::endl;
+        gotoxy(5, 17); std::cout << "[ENTER] - Select" << std::endl;
+        // gettting input key
+        system("pause>nul");
+
+        // put the cursor down by 1 until the lowest choice of menu
+        if(GetAsyncKeyState(VK_DOWN) < 0 && x != yStart + menuSize) //down button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x++;
+            menu_item++;
+            continue;
+        }
+        // put the cursor up by 1 until the highest choice of menu
+        else if(GetAsyncKeyState(VK_UP) < 0 && x != yStart) //up button pressed
+        {
+            gotoxy(2, x); std::cout << "  ";
+            x--;
+            menu_item--;
+            continue;
+        }
+        else if(GetAsyncKeyState(VK_RETURN) < 0) // Enter key pressed
+        {
+            if(menu_item == 0){
+                system("cls");
+                ShowConsoleCursor(true);
+                gotoxy(xStart,yStart); cout << "Enter the name of file including file extension (.txt): "; getline(cin,path);
+                ShowConsoleCursor(false);
+                oFile.open(path, std::fstream::app);
+                return true;
+            } else if(menu_item == 1){
+                return false;
+            }
+
+		}
+
     }
-    // return y/n
-    return output;
 }
-
 
 #endif
