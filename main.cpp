@@ -62,7 +62,7 @@ int main()
     // set cursor off
     ShowConsoleCursor(false);
 
-    int menuSize = 4;
+    const int menuSize = 4;
 
     MenuItems mainMenu[menuSize] = {{"Projectile Motion", projectileMotion},
                                     {"Free Fall", freeFall},
@@ -77,7 +77,7 @@ int main()
 void projectileMotion()
 {
     system("cls");
-    int menuSize = 4;
+    const int menuSize = 4;
 
     MenuItems pmotionMenu[menuSize] = {{"Time of flight", P_TimeOfFlight},
                                        {"Range", P_Range},
@@ -91,7 +91,7 @@ void projectileMotion()
 void freeFall()
 {
     system("cls");
-    int menuSize = 6;
+    const int menuSize = 6;
     MenuItems freeFallMenu[menuSize] = {{"Time of Fall given Velocity", F_Time_Velocity},
                                         {"Time of Fall given Height", F_Time_Height},
                                         {"Height of Fall given Velocity", F_Height_Velocity},
@@ -106,7 +106,7 @@ void freeFall()
 void HorizontalPMotion()
 {
     system("cls");
-    int menuSize = 2;
+    const int menuSize = 2;
     MenuItems hpmMenu[menuSize] = {{"Time of flight", H_TimeOfFlight},
                                    {"Range", H_Range}};
     
