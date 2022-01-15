@@ -104,7 +104,7 @@ struct questionItems {
 // menu function to display menu and call function
 
 void Exit();
-bool Output(std::fstream &, std::string &);
+bool Output(std::fstream &);
 void inputData(int,questionItems, std::string);
 double calcQuestion(int,double[3],double[3]);
 // void inputMenu();
@@ -263,9 +263,7 @@ void inputData(int menu_item, questionItems Item, std::string inputFile)
     bool output;
     std::ifstream nFile;
     std::fstream oFile;
-    std::string path;
     formula Formula;
-    double angle,height,velocity,result;
     double input[5];
     int i, space = 2;
     int type = Item.type;
@@ -275,7 +273,7 @@ void inputData(int menu_item, questionItems Item, std::string inputFile)
     const int xStart = 5, yStart = 4;
     if(menu_item == 0)
     {
-        output = Output(oFile,path);
+        output = Output(oFile);
         system("cls");
         
         for(i = 0; i < Item.size; i++){
@@ -309,7 +307,7 @@ void inputData(int menu_item, questionItems Item, std::string inputFile)
     } else if(menu_item == 1){
         gotoxy(xStart, yStart - 2); cout << "Obtaining the file.." << endl;
         nFile.open(inputFile);
-        output = Output(oFile,path);
+        output = Output(oFile);
         system("cls");
         if(nFile){
             
@@ -400,10 +398,10 @@ void Exit()
 }
 
 // output file
-// return a char which is Y-yes or N-no to the function
+// return a boolean which is true or false to the function
 #include <string>
 
-bool Output(std::fstream &oFile, std::string &path)
+bool Output(std::fstream &oFile)
 {
     // char output;
     system("cls");
@@ -413,7 +411,8 @@ bool Output(std::fstream &oFile, std::string &path)
     int menu_item = 0;
     // location of x in y direction
     int x = yStart;
-    int menuSize = 2;
+    int menuSize = 1;
+    std::string path;
 
     while(true) {
 
@@ -422,7 +421,6 @@ bool Output(std::fstream &oFile, std::string &path)
         gotoxy(xStart, yStart - 2); std::cout << "Do you want to put the results into an output file?" << std::endl;
         gotoxy(xStart, yStart); std::cout << "Yes" << endl;
         gotoxy(xStart, yStart + 1); std::cout << "No" << endl;
-
         
         // display instructions
         gotoxy(5, 15); std::cout << "\x18  - Up" << std::endl;
