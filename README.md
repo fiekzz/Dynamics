@@ -26,7 +26,7 @@ Max height formula
 1. Clone the repo
 
    ```
-   git clone https://github.com/fiekzz/Dynamics.git
+   git clone https://github.com/fiekzz/Dynamics
    ```
 2. Compile
 
