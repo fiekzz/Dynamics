@@ -30,7 +30,7 @@ private:
     double Time, Range, MaxHeight, Velocity, Height;
     double Vix, Viy, Vfx, Vfy;
     // gravity constant
-    const double Gravity = 9.8;
+    const double Gravity = 9.81;
     const double PI = 3.142;
 
 public:
